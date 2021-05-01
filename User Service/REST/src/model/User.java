@@ -18,13 +18,14 @@ private Connection connect()
  {e.printStackTrace();}
  return con;
  }
-public boolean insertUser(int user_level, String email, String fname, String lname, String dob, String address, int tp_number)
+public String insertUser(int user_level, String email, String fname, String lname, String dob, String address, int tp_number)
  {
+	String output = ""; 
  try
  {
  Connection con = connect();
  if (con == null)
- {return false; }
+ {return "Error while connecting to the database for inserting."; }
  // create a prepared statement
  String query = " insert into users (`user_id`, `user_level`, `email`, `fname`, `lname`, `dob`, `address`, `tp_number`)"
  + " values (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -41,56 +42,75 @@ public boolean insertUser(int user_level, String email, String fname, String lna
 // execute the statement
  preparedStmt.execute();
  con.close();
- return true;
+ output = "Inserted successfully";
  }
  catch (Exception e)
  {
+ output = "Error while inserting the user.";
  System.err.println(e.getMessage());
- return false;
  }
+ return output; 
  }
-public String readUsers(int user_id) {
-	JsonObject userData = new JsonObject();
+
+public String readUsers() {
+	String output = ""; 
 
 	try {
 
 		Connection con = connect();
 		if (con == null) {
-			return userData.toString();
+			return "Error while connecting to the database for reading.";
 		}
+		output = "<table border='1'><tr><th>User ID</th>"
+				 + "<th>User Level</th><th>Email</th>"
+				 + "<th>First Name</th><th>Last Name</th>"
+				 + "<th>Date Of Birth</th><th>Address</th><th>Telephone Number</th>"
+				 + "<th>Update</th><th>Remove</th></tr>";
+		
 		// create a prepared statement
-		String query = " select * from users where user_id = ? ";
-		PreparedStatement preparedStmt = con.prepareStatement(query);
+		String query = " select * from users ";
+		Statement stmt = con.createStatement();
+		 ResultSet rs = stmt.executeQuery(query); 
 		// binding values
 
-		preparedStmt.setInt(1, user_id);
-		ResultSet rs = preparedStmt.executeQuery();
-
-		JsonArray array = new JsonArray();
-		JsonObject innerUsers = new JsonObject();
+		
 		while (rs.next()) {
-
-			innerUsers.addProperty("user_level", rs.getInt(2));
-			innerUsers.addProperty("email", rs.getString(3));
-			innerUsers.addProperty("fname", rs.getString(4));
-			innerUsers.addProperty("lname", rs.getString(5));
-			innerUsers.addProperty("dob", rs.getString(6));
-			innerUsers.addProperty("address", rs.getString(7));
-			innerUsers.addProperty("tp_number", rs.getInt(8));
-			array.add(innerUsers);
+			String user_id = Integer.toString(rs.getInt("user_id"));
+			String user_level = Integer.toString(rs.getInt("user_level"));
+			String email = rs.getString("email");
+			String fname = rs.getString("fname");
+			String lname = rs.getString("lname");
+			String dob = rs.getString("dob");
+			String address = rs.getString("address");
+			String tp_number = Integer.toString(rs.getInt("tp_number"));
+			
+			output += "<td>" + user_level + "</td>";
+			output += "<td>" + email + "</td>";
+			output += "<td>" + fname + "</td>";
+			output += "<td>" + lname + "</td>";
+			output += "<td>" + dob + "</td>";
+			output += "<td>" + address + "</td>";
+			output += "<td>" + tp_number + "</td>";
+					 
+			output += "<td><input name='btnUpdate' type='button' value='Update' "
+					+ "class='btnUpdate btn btn-secondary' data-itemid='" + user_id + "'></td>"
+					+ "<td><input name='btnRemove' type='button' value='Remove' "
+					+ "class='btnRemove btn btn-danger' data-itemid='" + user_id + "'></td></tr>";
+			
 
 		}
-		userData.add("users", array);
+		con.close();
+		 // Complete the html table
+		 output += "</table>";
 
 	} catch (Exception e) {
 
-		e.printStackTrace();
-		userData.addProperty("status", "error");
-		return userData.toString();
+		output = "Error while reading the items.";
+		 System.err.println(e.getMessage()); 
 
 	}
 
-	return userData.toString();
+	return output; 
 }
 
 public String updateUser(int user_id,int user_level, String email, String fname, String lname, String dob, String address, int tp_number)
@@ -167,42 +187,4 @@ public String deleteUser(int user_id) {
 	return output;
 }
 	
-	public String returnUserLevel(int user_id) {
-		JsonObject UserData = new JsonObject();
-
-		try {
-
-			Connection con = connect();
-			if (con == null) {
-				return UserData.toString();
-			}
-			// create a prepared statement
-			String query = " select * from users where user_id = ? ";
-			PreparedStatement preparedStmt = con.prepareStatement(query);
-			// binding values
-
-			preparedStmt.setInt(1, user_id);
-			ResultSet rs = preparedStmt.executeQuery();
-
-			JsonArray array = new JsonArray();
-			JsonObject innerUsers = new JsonObject();
-			while (rs.next()) {
-
-				innerUsers.addProperty("product_id", rs.getInt(1));
-				innerUsers.addProperty("quantity", rs.getInt(2));
-				array.add(innerUsers);
-
-			}
-			UserData.add("users", array);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			UserData.addProperty("status", "error");
-			return UserData.toString();
-
-		}
-
-		return UserData.toString();
-	}	
 }
