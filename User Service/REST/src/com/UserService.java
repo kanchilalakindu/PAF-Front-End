@@ -1,4 +1,4 @@
-package com;
+/*package com;
 import model.User;
 //For REST Service
 import javax.ws.rs.*;
@@ -96,6 +96,6 @@ public String deleteUser(String data) {
 		return "{status:" + returnValue + "}";
 }
 
-}
+}*/
 
 

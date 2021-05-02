@@ -18,7 +18,7 @@ private Connection connect()
  {e.printStackTrace();}
  return con;
  }
-public String insertUser(int user_level, String email, String fname, String lname, String dob, String address, int tp_number)
+public String insertUser(String user_level, String email, String fname, String lname, String dob, String address, String tp_number)
  {
 	String output = ""; 
  try
@@ -32,22 +32,26 @@ public String insertUser(int user_level, String email, String fname, String lnam
  PreparedStatement preparedStmt = con.prepareStatement(query);
  // binding values
  preparedStmt.setInt(1, 0);
- preparedStmt.setInt(2, user_level);
+ preparedStmt.setInt(2, Integer.parseInt(user_level));
  preparedStmt.setString(3, email);
  preparedStmt.setString(4, fname);
  preparedStmt.setString(5, lname);
  preparedStmt.setString(6, dob);
  preparedStmt.setString(7, address);
- preparedStmt.setInt(8, tp_number);
+ preparedStmt.setInt(8, Integer.parseInt(tp_number));
 // execute the statement
  preparedStmt.execute();
  con.close();
- output = "Inserted successfully";
+
+ 
+ String newUsers = readUsers();
+ output = "{\"status\":\"success\", \"data\": \"" +
+ newUsers + "\"}"; 
  }
  catch (Exception e)
  {
- output = "Error while inserting the user.";
- System.err.println(e.getMessage());
+	 output = "{\"status\":\"error\", \"data\": \"Error while inserting the user.\"}";
+			 System.err.println(e.getMessage()); 
  }
  return output; 
  }
@@ -93,9 +97,9 @@ public String readUsers() {
 			output += "<td>" + tp_number + "</td>";
 					 
 			output += "<td><input name='btnUpdate' type='button' value='Update' "
-					+ "class='btnUpdate btn btn-secondary' data-itemid='" + user_id + "'></td>"
+					+ "class='btnUpdate btn btn-secondary' data-userid='" + user_id + "'></td>"
 					+ "<td><input name='btnRemove' type='button' value='Remove' "
-					+ "class='btnRemove btn btn-danger' data-itemid='" + user_id + "'></td></tr>";
+					+ "class='btnRemove btn btn-danger' data-userid='" + user_id + "'></td></tr>";
 			
 
 		}
@@ -113,7 +117,7 @@ public String readUsers() {
 	return output; 
 }
 
-public String updateUser(int user_id,int user_level, String email, String fname, String lname, String dob, String address, int tp_number)
+public String updateUser(String user_id,String user_level, String email, String fname, String lname, String dob, String address, String tp_number)
 {
 	String output = "error";
 	try {
@@ -131,32 +135,32 @@ public String updateUser(int user_id,int user_level, String email, String fname,
 		PreparedStatement preparedStmt = con.prepareStatement(query);
 		// binding values
 
-		 preparedStmt.setInt(1, user_level);
+		 preparedStmt.setInt(1, Integer.parseInt(user_level));
 		 preparedStmt.setString(2, email);
 		 preparedStmt.setString(3, fname);
 		 preparedStmt.setString(4, lname);
 		 preparedStmt.setString(5, dob);
 		 preparedStmt.setString(6, address);
-		 preparedStmt.setInt(7, tp_number);
-		 preparedStmt.setInt(8, user_id);
+		 preparedStmt.setInt(7, Integer.parseInt(tp_number));
+		 preparedStmt.setInt(8, Integer.parseInt(user_id));
 		// execute the statement
 
-		int result = preparedStmt.executeUpdate();
+		preparedStmt.executeUpdate();
 
-		if (result >= 1) {
-			output = "done";
-
-		}
 		con.close();
+		
+		String newUsers = readUsers();
+		 output = "{\"status\":\"success\", \"data\": \"" +
+		 newUsers + "\"}"; 
 
 	} catch (Exception e) {
-		output = "Error while prosessing the request.";
-		System.err.println(e.getMessage());
+		output = "{\"status\":\"error\", \"data\": \"Error while updating the user.\"}";
+		 System.err.println(e.getMessage());
 	}
 	return output;
 }
 
-public String deleteUser(int user_id) {
+public String deleteUser(String user_id) {
 	String output = "error";
 	try {
 		Connection con = connect();
@@ -168,20 +172,19 @@ public String deleteUser(int user_id) {
 		PreparedStatement preparedStmt = con.prepareStatement(query);
 		// binding values
 
-		preparedStmt.setInt(1, user_id);
-
+		preparedStmt.setInt(1, Integer.parseInt(user_id));
 		// execute the statement
 
-		int result = preparedStmt.executeUpdate();
+		preparedStmt.executeUpdate();
 
-		if (result >= 1) {
-			output = "done";
-
-		}
 		con.close();
+		
+		String newUsers = readUsers();
+		 output = "{\"status\":\"success\", \"data\": \"" +
+		 newUsers + "\"}"; 
 
 	} catch (Exception e) {
-		output = "Exception";
+		output = "{\"status\":\"error\", \"data\": \"Error while deleting the user.\"}";
 		System.err.println(e.getMessage());
 	}
 	return output;

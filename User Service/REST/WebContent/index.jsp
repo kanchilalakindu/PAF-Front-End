@@ -1,4 +1,4 @@
-<%@page import = "model.User" %>>
+<%@page import = "model.User" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -31,8 +31,12 @@ Telephone Number:<input id="tp_number" name="tp_number" type="text"class="form-c
 <input type="hidden" id="hidUserIDSave" name="hidUserIDSave" value="">
 
 </form>
+
+<div id="alertSuccess" class="alert alert-success"></div>
+<div id="alertError" class="alert alert-danger"></div>
+
 <br>
-<div id="divItemsGrid">
+<div id="divUsersGrid">
 <%
 User userObj = new User();
 out.print(userObj.readUsers());

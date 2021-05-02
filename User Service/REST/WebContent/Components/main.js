@@ -27,3 +27,98 @@ var type = ($("#hidUserIDSave").val() == "") ? "POST" : "PUT";
  }
  });
 });
+
+////////////////////////////////////////////////////////////////////////////////
+
+function onItemSaveComplete(response, status)
+{ 
+    if (status == "success") 
+    { 
+        var resultSet = JSON.parse(response); 
+        if (resultSet.status.trim() == "success") 
+        { 
+            $("#alertSuccess").text("Successfully saved."); 
+            $("#alertSuccess").show(); 
+            $("#divUsersGrid").html(resultSet.data); 
+        } 
+        else if (resultSet.status.trim() == "error") 
+        { 
+            $("#alertError").text(resultSet.data); 
+            $("#alertError").show(); 
+        } 
+    } 
+    else if (status == "error") 
+    { 
+        $("#alertError").text("Error while saving."); 
+        $("#alertError").show(); 
+    } else
+    { 
+        $("#alertError").text("Unknown error while saving.."); 
+        $("#alertError").show(); 
+    }
+    $("#hidUserIDSave").val(""); 
+    $("#formUser")[0].reset(); 
+}
+
+ 
+
+$(document).on("click", ".btnUpdate", function(event)
+{ 
+    $("#hidUserIDSave").val($(this).data("userid"));
+    $("#user_level").val($(this).closest("tr").find('td:eq(0)').text()); 
+    $("#email").val($(this).closest("tr").find('td:eq(1)').text()); 
+    $("#fname").val($(this).closest("tr").find('td:eq(2)').text()); 
+    $("#lname").val($(this).closest("tr").find('td:eq(3)').text());
+    $("#dob").val($(this).closest("tr").find('td:eq(4)').text());
+    $("#address").val($(this).closest("tr").find('td:eq(5)').text());
+    $("#tp_number").val($(this).closest("tr").find('td:eq(6)').text());
+    
+});
+
+ 
+
+$(document).on("click", ".btnRemove", function(event)
+{ 
+    $.ajax( 
+    { 
+        url : "UserServlet", 
+        type : "DELETE", 
+        data : "user_id=" + $(this).data("userid"),
+        dataType : "text", 
+        complete : function(response, status) 
+        { 
+            onItemDeleteComplete(response.responseText, status); 
+        } 
+    }); 
+})
+
+ 
+
+function onItemDeleteComplete(response, status)
+{ 
+if (status == "success") 
+{ 
+    var resultSet = JSON.parse(response); 
+    if (resultSet.status.trim() == "success") 
+    { 
+        $("#alertSuccess").text("Successfully deleted."); 
+        $("#alertSuccess").show(); 
+        $("#divUsersGrid").html(resultSet.data); 
+    } 
+    else if (resultSet.status.trim() == "error") 
+    { 
+        $("#alertError").text(resultSet.data); 
+        $("#alertError").show(); 
+    } 
+     } 
+    else if (status == "error") 
+    { 
+        $("#alertError").text("Error while deleting."); 
+        $("#alertError").show(); 
+    } 
+    else
+    { 
+        $("#alertError").text("Unknown error while deleting.."); 
+        $("#alertError").show(); 
+    }
+} 
