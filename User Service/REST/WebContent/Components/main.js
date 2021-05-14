@@ -161,9 +161,14 @@ function validateItemForm()
 	return "Enter Address.";
 	}
 	//Telephone number
+	var tp_number = $("#tp_number").val();
 	if ($("#tp_number").val().trim() == "")
 	{
 	return "Enter Telephone Number.";
+	}
+	if ((!$.isNumeric(tp_number)))
+	{
+	return "Enter Numbers Only.";
 	}
 	return true;
 }
