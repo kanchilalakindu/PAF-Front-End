@@ -29,7 +29,6 @@ Telephone Number:<input id="tp_number" name="tp_number" type="text"class="form-c
 <br>
 <input id="btnSave" name="btnSave" type="button" value="Save" class="btn btn-primary">
 <input type="hidden" id="hidUserIDSave" name="hidUserIDSave" value="">
-
 </form>
 
 <div id="alertSuccess" class="alert alert-success"></div>

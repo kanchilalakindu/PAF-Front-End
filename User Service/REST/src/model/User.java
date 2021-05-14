@@ -65,7 +65,7 @@ public String readUsers() {
 		if (con == null) {
 			return "Error while connecting to the database for reading.";
 		}
-		output = "<table border='1'><tr><th>User ID</th>"
+		output = "<table border='1'><tr>"
 				 + "<th>User Level</th><th>Email</th>"
 				 + "<th>First Name</th><th>Last Name</th>"
 				 + "<th>Date Of Birth</th><th>Address</th><th>Telephone Number</th>"

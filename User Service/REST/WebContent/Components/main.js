@@ -1,31 +1,33 @@
 $(document).on("click", "#btnSave", function(event)
 {
-// Clear alerts---------------------
- $("#alertSuccess").text("");
- $("#alertSuccess").hide();
- $("#alertError").text("");
- $("#alertError").hide();
-// Form validation-------------------
-/*var status = validateItemForm();
-if (status != true)
- {
- $("#alertError").text(status);
- $("#alertError").show();
- return;
- }*/
-// If valid------------------------
+//Form validation-------------------
+var status = validateItemForm();
+	if (status != true)
+	{
+		$("#alertError").text(status);
+		$("#alertError").show();
+		return;
+	}	
+	
+// Clear alerts--------------------
+$("#alertSuccess").text("");
+$("#alertSuccess").hide();
+$("#alertError").text("");
+$("#alertError").hide();
+
+ // If valid------------------------
 var type = ($("#hidUserIDSave").val() == "") ? "POST" : "PUT";
- $.ajax(
- {
- url : "UserServlet",
- type : type,
- data : $("#formUser").serialize(),
- dataType : "text",
- complete : function(response, status)
- {
- onItemSaveComplete(response.responseText, status);
- }
- });
+$.ajax(
+{
+url : "UserServlet",
+type : type,
+data : $("#formUser").serialize(),
+dataType : "text",
+complete : function(response, status)
+{
+onItemSaveComplete(response.responseText, status);
+}
+});
 });
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,3 +124,46 @@ if (status == "success")
         $("#alertError").show(); 
     }
 } 
+
+
+
+function validateItemForm()
+{
+	console.log("Error");
+	//User Level
+	if ($("#user_level").val().trim() == "")
+	{
+		return "Enter User Level.";
+	}
+	//Email
+	if ($("#email").val().trim() == "")
+	{
+		return "Enter Email.";
+	}
+	//First Name
+	if ($("#fname").val().trim() == "")
+	{
+		return "Enter First Name.";
+	}
+	//Last Name
+	if ($("#lname").val().trim() == "")
+	{
+		return "Enter Last Name.";
+	}
+	//Date of Birth
+	if ($("#dob").val().trim() == "")
+	{
+		return "Enter Date Of Birth.";
+	}
+	//Address
+	if ($("#address").val().trim() == "")
+	{
+	return "Enter Address.";
+	}
+	//Telephone number
+	if ($("#tp_number").val().trim() == "")
+	{
+	return "Enter Telephone Number.";
+	}
+	return true;
+}
